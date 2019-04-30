@@ -22,3 +22,20 @@ executable blocky
   hs-source-dirs: src
   default-language: Haskell2010
   ghc-options: -O2 -threaded -Wall
+
+test-suite blocky-spec
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  build-depends: base
+               , Cabal
+               , hspec
+               , HUnit
+  other-modules: BlockTreeSpec
+               , Blocky.BlockTree
+               , Blocky.GamePlay
+               , Blocky.Rendering.Console
+               , Blocky.Types
+  hs-source-dirs: tests
+                , src
+  default-language: Haskell2010
+  ghc-options: -O2 -threaded -Wall
