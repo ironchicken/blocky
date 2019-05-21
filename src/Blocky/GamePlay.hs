@@ -16,15 +16,16 @@ initState = State tree player p1 p2
     p1 = Cursor TL CursorEndpoint
     p2 = Cursor TR CursorEndpoint
 
-updateSplit :: State -> State
-updateSplit (State tree player p1 p2) =
-  State (splitAtCursor tree (c1, c2, c3, c4) cursor) player p1 p2
+updateSplit :: State -> Int -> State
+updateSplit (State tree player p1 p2) rnd =
+  State (splitAtCursor tree colours cursor) player p1 p2
   where
     cursor | player == P1 = p1 | player == P2 = p2
-    c1 = Red
-    c2 = Blue
-    c3 = Green
-    c4 = Yellow
+    colours
+      | rnd `mod` 4 == 0 = (Red, Blue, Green, Yellow)
+      | rnd `mod` 4 == 1 = (Yellow, Red, Blue, Green)
+      | rnd `mod` 4 == 2 = (Green, Yellow, Red, Blue)
+      | otherwise        = (Blue, Green, Yellow, Red)
 
 updateRotateRight :: State -> State
 updateRotateRight (State tree player p1 p2) =
@@ -43,10 +44,10 @@ select (State tree player p1 p2) selection
   | player == P1 = State tree player selection p2
   | player == P2 = State tree player p1 selection
 
-execCommand :: Command -> State -> State
-execCommand command s =
+execCommand :: Int -> Command -> State -> State
+execCommand rnd command s =
   case command of
-    Split -> updateSplit s
+    Split -> updateSplit s rnd
     RotateRight -> updateRotateRight s
     RotateLeft -> updateRotateLeft s
 
@@ -54,5 +55,5 @@ flipPlayer :: State -> State
 flipPlayer (State tree P1 p1 p2) = State tree P2 p1 p2
 flipPlayer (State tree P2 p1 p2) = State tree P1 p1 p2
 
-turn :: Command -> State -> State
-turn cmd = flipPlayer . execCommand cmd
+turn :: Int -> Command -> State -> State
+turn rnd cmd = flipPlayer . execCommand rnd cmd
