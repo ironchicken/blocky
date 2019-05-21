@@ -47,4 +47,5 @@ data Command
   = Split
   | RotateRight
   | RotateLeft
+  | Quit
   deriving (Eq, Show)
