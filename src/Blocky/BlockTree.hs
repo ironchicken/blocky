@@ -1,5 +1,6 @@
 module Blocky.BlockTree
   ( cursorDepth
+  , cursorFromList
   , rotateLeftAtCursor
   , rotateRightAtCursor
   , splitAtCursor
@@ -105,3 +106,13 @@ cursorDepth :: Block -> Cursor -> Int
 cursorDepth top cur = foldlCursor top cur 0 inc
   where
     inc i _ = i + 1
+
+cursorFromList :: [CursorPath] -> Cursor
+cursorFromList paths = foldl append CursorEndpoint paths
+  where
+    append :: Cursor -> CursorPath -> Cursor
+    append (Cursor p CursorEndpoint) q = Cursor p (Cursor q CursorEndpoint)
+    append (Cursor _ CursorFail) _ = error "Blocky.BlockTree.cursorFromList: CursorFail"
+    append (Cursor p c) q = Cursor p (append c q)
+    append CursorEndpoint p = Cursor p CursorEndpoint
+    append CursorFail _ = error "Blocky.BlockTree.cursorFromList: CursorFail"

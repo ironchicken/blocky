@@ -95,3 +95,13 @@ spec = do
       (return $ cursorDepth tree cursor)
         `shouldThrow`
         errorCall "Blocky.BlockTree.foldlCursor: Invalid cursor"
+
+  describe "cursorFromList" $ do
+    it "should build a cursor from the given list of cursor paths" $ do
+      let paths = [TL, TR]
+          expectedCursor = (Cursor TL (Cursor TR CursorEndpoint))
+
+      (cursorFromList paths) `shouldBe` expectedCursor
+
+    it "should build a null cursor given an empty list of paths" $ do
+      (cursorFromList []) `shouldBe` CursorEndpoint
