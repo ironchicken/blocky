@@ -10,9 +10,10 @@ main = mainLoop initState
 
 mainLoop :: State -> IO ()
 mainLoop st = do
-  I.renderGame st
-  st' <- I.readSelection st
-  cmd <- I.readCommand st
+  cxt <- I.initInteraction
+  I.renderGame cxt st
+  st' <- I.readSelection cxt st
+  cmd <- I.readCommand cxt st
   rnd <- randomIO
 
   case cmd of

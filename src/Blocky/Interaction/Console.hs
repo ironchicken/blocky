@@ -1,5 +1,6 @@
 module Blocky.Interaction.Console
-  ( renderGame
+  ( initInteraction
+  , renderGame
   , readSelection
   , readCommand
   )
@@ -9,11 +10,16 @@ import Blocky.Types
 import Blocky.BlockTree (cursorFromList)
 import System.IO
 
-renderGame :: State -> IO ()
-renderGame = print . show
+data Console = Console
 
-readSelection :: State -> IO State
-readSelection (State tree player p1 p2) = do
+initInteraction :: IO Console
+initInteraction = return Console
+
+renderGame :: Console -> State -> IO ()
+renderGame _ = print . show
+
+readSelection :: Console -> State -> IO State
+readSelection _ (State tree player p1 p2) = do
   hSetBuffering stdout NoBuffering
   putStr "Selection: "
   sel <- readLn
@@ -31,8 +37,8 @@ readSelection (State tree player p1 p2) = do
     toPath "br" = BR
     toPath _ = error "Blocky.Interaction.Console.readSelection: Bad path"
 
-readCommand :: State -> IO Command
-readCommand st = do
+readCommand :: Console -> State -> IO Command
+readCommand c st = do
   hSetBuffering stdout NoBuffering
   putStr "Command: "
   input <- readLn
@@ -41,4 +47,4 @@ readCommand st = do
     "rr" -> return RotateRight
     "rl" -> return RotateLeft
     "s" -> return Split
-    _ -> readCommand st
+    _ -> readCommand c st
