@@ -4,6 +4,7 @@ module Blocky.BlockTree
   , rotateLeftAtCursor
   , rotateRightAtCursor
   , splitAtCursor
+  , mapBlockTreeM
   )
 where
 
@@ -116,3 +117,14 @@ cursorFromList paths = foldl append CursorEndpoint paths
     append (Cursor p c) q = Cursor p (append c q)
     append CursorEndpoint p = Cursor p CursorEndpoint
     append CursorFail _ = error "Blocky.BlockTree.cursorFromList: CursorFail"
+
+mapBlockTreeM :: (Monad m) => Block -> (Int -> Colour -> m a) -> [m a]
+mapBlockTreeM tree f =
+  withTree 0 tree
+  where
+    withTree depth (NilBlock c) = [f depth c]
+    withTree depth (Block tl tr bl br) =
+      withTree (depth + 1) tl <>
+      withTree (depth + 1) tr <>
+      withTree (depth + 1) bl <>
+      withTree (depth + 1) br

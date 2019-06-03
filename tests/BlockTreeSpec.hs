@@ -105,3 +105,20 @@ spec = do
 
     it "should build a null cursor given an empty list of paths" $ do
       (cursorFromList []) `shouldBe` CursorEndpoint
+
+  describe "mapBlockTreeM" $ do
+    it "should flatten the given tree into a list of actions on each NilBlock in the tree" $ do
+      let tl = Block (NilBlock Blue) (NilBlock Yellow) (NilBlock Green) (NilBlock Red)
+          tree = Block tl (NilBlock Yellow) (NilBlock Green) (NilBlock Red)
+          action depth colour = return (depth, colour)
+          -- use [] as the test Monad
+          expectedList = [ return (2, Blue)
+                         , return (2, Yellow)
+                         , return (2, Green)
+                         , return (2, Red)
+                         , return (1, Yellow)
+                         , return (1, Green)
+                         , return (1, Red)
+                         ] :: [[(Int, Colour)]]
+
+      mapBlockTreeM tree action `shouldBe` expectedList
