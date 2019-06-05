@@ -118,13 +118,13 @@ cursorFromList paths = foldl append CursorEndpoint paths
     append CursorEndpoint p = Cursor p CursorEndpoint
     append CursorFail _ = error "Blocky.BlockTree.cursorFromList: CursorFail"
 
-mapBlockTreeM :: (Monad m) => Block -> (Int -> Colour -> m a) -> [m a]
+mapBlockTreeM :: (Monad m) => Block -> ([CursorPath] -> Colour -> m a) -> [m a]
 mapBlockTreeM tree f =
-  withTree 0 tree
+  withTree [] tree
   where
-    withTree depth (NilBlock c) = [f depth c]
-    withTree depth (Block tl tr bl br) =
-      withTree (depth + 1) tl <>
-      withTree (depth + 1) tr <>
-      withTree (depth + 1) bl <>
-      withTree (depth + 1) br
+    withTree path (NilBlock c) = [f path c]
+    withTree path (Block tl tr bl br) =
+      withTree (path <> [TL]) tl <>
+      withTree (path <> [TR]) tr <>
+      withTree (path <> [BL]) bl <>
+      withTree (path <> [BR]) br

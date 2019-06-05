@@ -112,13 +112,13 @@ spec = do
           tree = Block tl (NilBlock Yellow) (NilBlock Green) (NilBlock Red)
           action depth colour = return (depth, colour)
           -- use [] as the test Monad
-          expectedList = [ return (2, Blue)
-                         , return (2, Yellow)
-                         , return (2, Green)
-                         , return (2, Red)
-                         , return (1, Yellow)
-                         , return (1, Green)
-                         , return (1, Red)
-                         ] :: [[(Int, Colour)]]
+          expectedList = [ return ([TL, TL], Blue)
+                         , return ([TL, TR], Yellow)
+                         , return ([TL, BL], Green)
+                         , return ([TL, BR], Red)
+                         , return ([TR], Yellow)
+                         , return ([BL], Green)
+                         , return ([BR], Red)
+                         ] :: [[([CursorPath], Colour)]]
 
       mapBlockTreeM tree action `shouldBe` expectedList
