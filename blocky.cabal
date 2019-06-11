@@ -17,9 +17,14 @@ executable blocky
   other-modules: Blocky.BlockTree
                , Blocky.GamePlay
                , Blocky.Interaction.Console
+               , Blocky.Interaction.SDL
                , Blocky.Types
   build-depends: base
+               , lens
+               , linear
                , random
+               , sdl2
+               , text
   hs-source-dirs: src
   default-language: Haskell2010
   ghc-options: -O2 -threaded -Wall
@@ -31,11 +36,15 @@ test-suite blocky-spec
                , Cabal
                , hspec
                , HUnit
+               , linear
+               , sdl2
   other-modules: BlockTreeSpec
                , Blocky.BlockTree
                , Blocky.GamePlay
                , Blocky.Interaction.Console
+               , Blocky.Interaction.SDL
                , Blocky.Types
+               , InteractionSDLSpec
   hs-source-dirs: tests
                 , src
   default-language: Haskell2010
